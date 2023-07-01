@@ -11,7 +11,7 @@ namespace SistemaBancario.Contas
         private DateTime dataCriacao = DateTime.Now; // Define a data de criação como hoje.
         public Corrente(int _numero, int _agencia, double _saldo)
         {
-            numero = _numero;
+            Numero = _numero;
             agencia = _agencia;
             rendimento = 1.01;
             Saldo = _saldo;

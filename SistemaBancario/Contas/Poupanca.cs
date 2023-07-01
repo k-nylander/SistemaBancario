@@ -13,7 +13,7 @@ namespace SistemaBancario.Contas
         private double variacao;
         public double Variacao {
             get { return variacao; }
-            set { 
+            private set { 
                 rendimento += value;
                 variacao = value;
             }
@@ -21,7 +21,7 @@ namespace SistemaBancario.Contas
         #endregion
         public Poupanca(int _numero, int _agencia, double _saldo, double _variacao) // Construtor com parametros
         {
-            numero = _numero;
+            Numero = _numero;
             agencia = _agencia;
             rendimento = 1.03;
             Saldo = _saldo;
@@ -40,10 +40,10 @@ namespace SistemaBancario.Contas
                 try
                 {
                     Console.WriteLine(iInput.ToString());
-                    Console.Write("Numero da Conta: ");
-                    numero = Convert.ToInt32(Console.ReadLine());
                     Console.Write("Numero da Agencia: ");
                     agencia = Convert.ToInt32(Console.ReadLine());
+                    Console.Write("Numero da Conta: ");
+                    Numero = Convert.ToInt32(Console.ReadLine());
                     Console.Write("Saldo: ");
                     Saldo = Convert.ToDouble(Console.ReadLine());
                     Console.Write("Viariação do rendimento(%/mês): ");
@@ -53,11 +53,16 @@ namespace SistemaBancario.Contas
                 catch (Exception ex)
                 {
                     Console.Clear();
-                    Console.WriteLine("Valor inválido. " + ex.ToString());
+                    Console.WriteLine("Valor inválido. " + ex.Message);
                 }
             }
             Console.Clear(); // Limpa a tela e retorna sucesso.
-            Console.WriteLine("Conta " + numero + " criada com sucesso!!");
+            Console.WriteLine("Conta " + Numero + " criada com sucesso!!");
+        }
+        public override string ToString()
+        {
+            ConsoleInterface ContaBox = new ConsoleInterface($"Conta {Numero}", $"Agência {agencia}", "%div", $"R$ {Saldo}",$"{Variacao*100}%/mês");
+            return ContaBox.ToString();
         }
     }
 }

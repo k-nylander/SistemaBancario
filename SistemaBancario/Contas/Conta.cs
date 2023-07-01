@@ -11,35 +11,34 @@ namespace SistemaBancario.Contas
 {
     internal abstract class Conta
     {
-        public int numero { get; protected set; }
+        #region AtrubutoNumero
+        private int numero;
+        public int Numero {
+            get { return numero; }
+            protected set {
+                // Verificação do numero da conta.
+                if (Program.BancoDeDados.Any(conta => conta.agencia == this.agencia && conta.numero == value))
+                    throw new Exception("Numero de conta já registrado nessa agência");
+                else
+                    numero = value;
+            }
+        }
+        #endregion
         public int agencia { get; protected set; }
-
-        /* Acho que tem um problema com o rendimento e as taxas.
-         * Supondo que uma pessoa mudasse o rendimento no meio do ano, antes da cobraça dessa taxa.
-         * Isso afetaria o lucro e consequentemente a taxa. Então seria bom fazer um atributo "lucroAnual" 
-         * pra poder taxar sem dar nenhuma difereça?
-         */
-        protected double rendimento;
-
         #region campo_saldo
-        /* Precisei fazer isso para evitar um loop no setter do saldo.
-         * Ex: double saldo {get{return saldo} set{saldo=value}};
-         * 
-         * Fazendoisso o programa fica chamando o saldo pra sempre e eu não sabia arrumar kkk
-         */
-
         private double saldo;//Atributo saldo
         protected double Saldo //Propriedade saldo
         {
             get { return saldo; }
-            set
-            {
+            set{
                 if (value < 0)
-                    throw new ArgumentException("O saldo deve ser não negativo");
-                saldo = value;
+                    throw new ArgumentException("O saldo não pode ser negativo");
+                else
+                    saldo = value;
             }
         }
         #endregion
+        protected double rendimento;
 
         public double projecaoFutura() // Simula quanto rendimento bruto haverá até o final do ano.
         {
@@ -47,7 +46,9 @@ namespace SistemaBancario.Contas
             TimeSpan tempoFaltando = proximoAno - DateTime.Now;
             return Math.Pow(rendimento, Math.Floor((double)tempoFaltando.Days / 30)) * saldo;
         }
+
         public abstract double taxa(); // Calcula a taxa
+
         public virtual void InserirDados() // Modo de inserir os dados quando o construtor é vazio.
         {
             Console.Clear();
@@ -57,21 +58,42 @@ namespace SistemaBancario.Contas
                 try
                 {
                     Console.WriteLine(iInput.ToString());
-                    Console.Write("Numero da Conta:");
-                    numero = Convert.ToInt32(Console.ReadLine());
                     Console.Write("Numero da Agencia:");
                     agencia = Convert.ToInt32(Console.ReadLine());
+                    Console.Write("Numero da Conta:");
+                    Numero = Convert.ToInt32(Console.ReadLine());
                     Console.Write("Saldo:");
                     Saldo = Convert.ToDouble(Console.ReadLine());
                     break;
                 }catch (Exception ex)
                 {
                     Console.Clear();
-                    Console.WriteLine("Valor inválido. " + ex.ToString());
+                    Console.WriteLine($"Valor inválido. {ex.Message}");
                 }
             }
             Console.Clear();
-            Console.WriteLine("Conta " + numero + " criada com sucesso!!");
+            Console.WriteLine("Conta " + Numero + " criada com sucesso!!");
         }
+        
+        public void Transferencia(Conta destino, double valor)
+        {
+            if(Saldo < valor){
+                throw new Exception("Saldo insufcente!");
+            }
+            Saldo -= valor;
+            destino.Saldo += valor;
+            
+            Console.Clear();
+            Console.WriteLine(" Transação concluída com sucesso ");
+        }
+
+        public override string ToString()
+        {
+            ConsoleInterface ContaBox = new ConsoleInterface($"Conta {Numero}", $"Agência {agencia}", "%div", $"R$ {Saldo}");
+            return ContaBox.ToString();
+        }
+        public void saque(double valor) => Saldo -= valor;
+        public void deposito(double valor) => Saldo += valor;
+
     }
 }
