@@ -361,3 +361,8 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/SistemaBancario/Contas/Poupanca.cs
+/SistemaBancario/Contas/ContaVelha.cs
+/SistemaBancario/Contas/Corrente.cs
+/SistemaBancario/Contas/Conta.cs
+*.cs
