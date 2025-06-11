@@ -1,6 +1,6 @@
-# Sistema Bancário - README
+# Sistema Bancário
 
-Este repositório contém um projeto de um Sistema Bancário desenvolvido em C# utilizando o Entity Framework Core para interagir com um banco de dados MySQL.
+Este é um projeto de um Sistema Bancário desenvolvido em C# utilizando o Entity Framework Core para interagir com um banco de dados MySQL.
 
 ## Funcionalidades
 
